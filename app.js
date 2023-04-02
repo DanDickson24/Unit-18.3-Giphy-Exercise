@@ -20,20 +20,19 @@ removeGifsButton.addEventListener('click', () => {
 	gifsContainer.innerHTML = '';
 });
 
-function searchGifs(searchTerm) {
+async function searchGifs(searchTerm) {
 	const url = `http://api.giphy.com/v1/gifs/search?q=${searchTerm}&api_key=${API_KEY}&offset=${offset}`;
-	axios.get(url)
-		.then(response => {
-			const data = response.data;
-			if (data.data.length > 0) {
-				const gifUrl = data.data[0].images.original.url;
-				const gifImg = document.createElement('img');
-				gifImg.src = gifUrl;
-				gifsContainer.appendChild(gifImg);
-				offset += 1;
-			}
-		})
-		.catch(error => {
-			console.log(error);
-		});
+	try {
+		const response = await axios.get(url);
+		const data = response.data;
+		if (data.data.length > 0) {
+			const gifUrl = data.data[0].images.original.url;
+			const gifImg = document.createElement('img');
+			gifImg.src = gifUrl;
+			gifsContainer.appendChild(gifImg);
+			offset += 1;
+		}
+	} catch (error) {
+		console.log(error);
+	}
 }
